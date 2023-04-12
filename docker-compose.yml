@@ -14,7 +14,7 @@ services:
     # 환경 변수 설정
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - TZ= Asia/Seoul
+#      - TZ= Asia/Seoul
     # 커맨드 설정
     command:
       - --character-set-server=utf8mb4
