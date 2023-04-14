@@ -15,6 +15,9 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity<JsonResponseDto> signUp(@Valid @RequestBody MemberDto memberDto) {
+
+
+
         return ResponseEntity.ok().build();
     }
 }
