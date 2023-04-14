@@ -30,9 +30,10 @@ public class SecurityConfig {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)         // 세션 관리 없이 token으로 인증
                     .and()
                 .authorizeRequests()
-                    .antMatchers("/").permitAll()
-                    .antMatchers("/members/login").permitAll()
-                    .antMatchers("/members/test").hasRole("USER")
+                    .antMatchers("*").permitAll()
+//                    .antMatchers("/").permitAll()
+//                    .antMatchers("/members/login").permitAll()
+//                    .antMatchers("/members/test").hasRole("USER")
                     .anyRequest().authenticated()
                 .and()
                     .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
