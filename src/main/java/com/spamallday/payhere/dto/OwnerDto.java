@@ -1,6 +1,6 @@
 package com.spamallday.payhere.dto;
 
-import lombok.AccessLevel;
+import com.spamallday.payhere.entity.Owner;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
@@ -10,4 +10,11 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @ToString(callSuper = true)
 public class OwnerDto extends MemberDto {
+    public Owner toEntity() {
+        return Owner.builder()
+                .number(getNumber())
+                .password(getPassword())
+                .salt(getSalt())
+                .build();
+    }
 }

@@ -1,9 +1,8 @@
 package com.spamallday.payhere.configuration;
 
 import com.spamallday.payhere.dto.JsonResponseDto;
+import com.spamallday.payhere.exception.CustomException;
 import com.spamallday.payhere.util.JsonConverter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,14 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ApiControllerAdvice {
-
-    private final JsonConverter jsonConverter;
-
-    @Autowired
-    public ApiControllerAdvice(JsonConverter jsonConverter) {
-        this.jsonConverter = jsonConverter;
-    }
-
     // RequestBody가 입력됐을 때 @Valid에서 예외가 발생하는 경우 일괄 예외 처리
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<JsonResponseDto> handleValidationExceptions(MethodArgumentNotValidException ex) {
@@ -32,8 +23,13 @@ public class ApiControllerAdvice {
         String msg = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
 
         // 반환 형식에 맞춰 에러 처리
-        JsonResponseDto json = jsonConverter.toJsonResponse(HttpStatus.BAD_REQUEST, msg, null);
+        JsonResponseDto json = JsonConverter.toBadJsonResponse(msg);
 
         return ResponseEntity.badRequest().body(json);
+    }
+
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<JsonResponseDto> handleCustomException(CustomException e) {
+        return ResponseEntity.badRequest().body(JsonConverter.toBadJsonResponse(e.getMessage()));
     }
 }

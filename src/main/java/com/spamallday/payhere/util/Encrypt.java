@@ -6,12 +6,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-@Component
 public class Encrypt {
     private static final int SALT_SIZE = 32;
 
     /* Salt 생성 */
-    public  String getSalt() {
+    public static String getSalt() {
         SecureRandom sr = new SecureRandom();
         byte[] salt = new byte[SALT_SIZE];
 
@@ -28,7 +27,7 @@ public class Encrypt {
     }
 
     /* 암호화 */
-    public  String getEncrypt(String password, String salt) {
+    public static String getEncrypt(String password, String salt) {
         String result;
 
         try {

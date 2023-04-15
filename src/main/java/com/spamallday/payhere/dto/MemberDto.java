@@ -1,7 +1,10 @@
 package com.spamallday.payhere.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.spamallday.payhere.entity.Owner;
+import com.spamallday.payhere.util.Encrypt;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -25,4 +28,21 @@ public class MemberDto {
     private String number;
     @NotBlank(message = "잘못된 비밀번호입니다. 비어있거나 공백이 있습니다.")
     private String password;
+    @JsonIgnore
+    private String salt;
+
+    public void encrypt() {
+        String salt = Encrypt.getSalt();
+
+        this.password = Encrypt.getEncrypt(password, salt);
+        this.salt = salt;
+    }
+
+    public Owner toOwnerEntity() {
+        return Owner.builder()
+                .number(getNumber())
+                .password(getPassword())
+                .salt(getSalt())
+                .build();
+    }
 }
