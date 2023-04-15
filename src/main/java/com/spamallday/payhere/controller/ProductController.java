@@ -43,7 +43,7 @@ public class ProductController {
     }
 
     /* 상품 수정
-    * PUT, PATCH 등을 사용하지 않은 과한 데이터 전송량일 수 있지만 우선 DTO 활용해서 간결하게 수정을 구현
+    * 과한 데이터 전송량일 수 있지만 우선 DTO 활용해서 간결하게 수정을 구현
     * */
     @PutMapping("/cafe/update/{id}")
     public ResponseEntity<JsonResponseDto> cafeUpdate(@PathVariable Long id, @Valid @RequestBody CafeProductDto cafeProductDto) {
@@ -51,9 +51,22 @@ public class ProductController {
         cafeProductService.validProperty(cafeProductDto);
         // 수정
         try {
-            cafeProductService.updateProperty(cafeProductDto);
+            cafeProductService.updateProperty(id, cafeProductDto);
         }catch (Exception e) {
             JsonConverter.toJsonResponse(HttpStatus.INTERNAL_SERVER_ERROR, CustomErrorCode.PRODUCT_UPDATE_ERROR.getErrorMsg(), null);
+        }
+
+        return ResponseEntity.ok().body(JsonConverter.toOkNoDataJsonResponse());
+    }
+
+    /* 상품 삭제 */
+    @DeleteMapping("/cafe/delete/{id}")
+    public ResponseEntity<JsonResponseDto> cafeDelete(@PathVariable Long id) {
+        // 삭제
+        try {
+            cafeProductService.removeItem(id);
+        }catch (Exception e) {
+            JsonConverter.toJsonResponse(HttpStatus.INTERNAL_SERVER_ERROR, CustomErrorCode.PRODUCT_DELETE_ERROR.getErrorMsg(), null);
         }
 
         return ResponseEntity.ok().body(JsonConverter.toOkNoDataJsonResponse());

@@ -50,10 +50,11 @@ public class CafeProductServiceImpl implements CafeProductService {
         }
     }
 
+    @Override
     @Transactional
-    public void updateProperty(CafeProductDto cafeProductDto) throws Exception {
-        CafeProduct res = cafeProductRepository.findByIdAndOwnerId(cafeProductDto.getId(), 1);
-//        Optional<CafeProduct> res = cafeProductRepository.findById(cafeProductDto.getId());
+    public void updateProperty(Long id, CafeProductDto cafeProductDto) throws Exception {
+        // TODO 사장님 ID 넣어서 수행하게 바꿔야함
+        CafeProduct res = cafeProductRepository.findByIdAndOwnerId(id, 1);
 
         // 쿼리 결과가 존재하면
         if (res != null) {
@@ -63,5 +64,12 @@ public class CafeProductServiceImpl implements CafeProductService {
 //        else {
 //            cafeProductRepository.save(cafeProductDto.toEntity());
 //        }
+    }
+
+    @Override
+    @Transactional
+    public void removeItem(Long id) throws Exception  {
+        // TODO 사장님 ID 넣어서 수행하게 바꿔야함
+        cafeProductRepository.deleteByIdAndOwnerId(id, 1);
     }
 }

@@ -14,7 +14,8 @@ public enum CustomErrorCode {
     EXPIRE_TYPE_ERROR("잘못된 유통기한입니다."),
     SIZE_WRONG_ERROR("잘못된 사이즈입니다."),
     PRODUCT_UPDATE_ERROR("상품 수정에 문제가 발생했습니다."),
-    PRODUCT_REG_ERROR("상품 등록에 문제가 발생했습니다.");
+    PRODUCT_REG_ERROR("상품 등록에 문제가 발생했습니다."),
+    PRODUCT_DELETE_ERROR("상품 삭제 중 문제가 발생했습니다.");
 
     private final String errorMsg;
 
