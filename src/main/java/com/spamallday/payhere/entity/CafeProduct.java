@@ -64,7 +64,7 @@ public class CafeProduct {
     private Owner owner;
 
     @Builder
-    public CafeProduct(String category, Integer price, Integer cost, String name, String info, String code, Date expire, String size, Owner owner) {
+    public CafeProduct(String category, Integer price, Integer cost, String name, String info, String code, Date expire, String size, String wordName, Owner owner) {
         this.category = category;
         this.price = price;
         this.cost = cost;

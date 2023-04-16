@@ -1,15 +1,17 @@
 package com.spamallday.payhere.dto;
 
 import com.spamallday.payhere.entity.CafeProduct;
+import com.spamallday.payhere.entity.Owner;
+import com.spamallday.payhere.util.NameConverter;
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -50,7 +52,7 @@ public class CafeProductDto {
     @NotEmpty(message = "사이즈를 올바르게 입력해주십시오.")
     private String size;
 
-    public CafeProduct toEntity() {
+    public CafeProduct toEntity(Owner owner) {
 
         return  CafeProduct.builder()
                     .category(getCategory())
@@ -62,6 +64,8 @@ public class CafeProductDto {
                     // String -> LocalDateTime -> Date로 변경
                     .expire(Timestamp.valueOf(LocalDateTime.parse(getExpire(), DateTimeFormatter.ISO_DATE_TIME)))
                     .size(getSize())
+                    .wordName(NameConverter.toConsonant(getName()))
+                    .owner(owner)
                     .build();
     }
 

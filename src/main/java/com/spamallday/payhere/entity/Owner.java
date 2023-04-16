@@ -1,13 +1,14 @@
 package com.spamallday.payhere.entity;
 
 
-import com.spamallday.payhere.dto.OwnerDto;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Table(name = "member")  // 테이블 이름에 맞게 생성
 @Entity // Entity로 명시

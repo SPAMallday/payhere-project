@@ -1,11 +1,11 @@
 package com.spamallday.payhere.util;
 
-import org.springframework.stereotype.Component;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
+// Spring Security 사용을 위해 Bcrypt 인코더로 대체
+// 사용하지 않음
 public class Encrypt {
     private static final int SALT_SIZE = 32;
 

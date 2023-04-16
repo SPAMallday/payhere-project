@@ -2,13 +2,17 @@ package com.spamallday.payhere.service;
 
 import com.spamallday.payhere.dto.CafeProductDto;
 import com.spamallday.payhere.entity.CafeProduct;
+import com.spamallday.payhere.entity.Owner;
 import com.spamallday.payhere.exception.CustomErrorCode;
 import com.spamallday.payhere.exception.CustomException;
 import com.spamallday.payhere.repository.CafeProductRepository;
+import com.spamallday.payhere.repository.OwnerRepository;
 import com.spamallday.payhere.util.CursorResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -20,14 +24,13 @@ import java.util.regex.Pattern;
 @Slf4j
 @Service
 public class CafeProductServiceImpl implements CafeProductService {
-
-    private final int ownerId = 1;
-
     private final CafeProductRepository cafeProductRepository;
+    private final OwnerRepository ownerRepository;
 
     @Autowired
-    public CafeProductServiceImpl(CafeProductRepository cafeProductRepository) {
+    public CafeProductServiceImpl(CafeProductRepository cafeProductRepository, OwnerRepository ownerRepository) {
         this.cafeProductRepository = cafeProductRepository;
+        this.ownerRepository = ownerRepository;
     }
 
     // 어노테이션으로 하지 못한 검증을 수행
@@ -56,7 +59,10 @@ public class CafeProductServiceImpl implements CafeProductService {
     @Override
     @Transactional
     public void updateProperty(Long id, CafeProductDto cafeProductDto) throws Exception {
-        // TODO 사장님 ID 넣어서 수행하게 바꿔야함
+        // SecurityContextHolder에 있는 유저 정보를 받아와서 Integer로 변환해 ownerId로 사용
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer ownerId = Integer.valueOf(userDetails.getUsername());
+
         CafeProduct res = cafeProductRepository.findByIdAndOwnerId(id, ownerId);
 
         // 쿼리 결과가 존재하면
@@ -68,38 +74,56 @@ public class CafeProductServiceImpl implements CafeProductService {
     @Override
     @Transactional
     public void registerItem(CafeProductDto cafeProductDto) throws Exception {
-        // TODO 사용자 정보 받아와서 toEntity에 전달하여 Owner 등록
-        cafeProductRepository.save(cafeProductDto.toEntity());
+        // SecurityContextHolder에 있는 유저 정보를 받아와서 Integer로 변환해 ownerId로 사용
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer ownerId = Integer.valueOf(userDetails.getUsername());
+
+        Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new CustomException(CustomErrorCode.PRODUCT_REG_ERROR ));
+
+        cafeProductRepository.save(cafeProductDto.toEntity(owner));
     }
 
     @Override
     @Transactional
     public void removeItem(Long id) throws Exception  {
-        // TODO 사장님 ID 넣어서 수행하게 바꿔야함
+        // SecurityContextHolder에 있는 유저 정보를 받아와서 Integer로 변환해 ownerId로 사용
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer ownerId = Integer.valueOf(userDetails.getUsername());
+
         cafeProductRepository.deleteByIdAndOwnerId(id, ownerId);
     }
 
     /* 커서 위치를 기준으로 Page 만큼 내림차순 조회 */
     @Override
     public CursorResult<CafeProductDto> getItemList(Long cursorId, Pageable page) {
+        // SecurityContextHolder에 있는 유저 정보를 받아와서 Integer로 변환해 ownerId로 사용
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer ownerId = Integer.valueOf(userDetails.getUsername());
+
         // 페이징 조회
-        final List<CafeProductDto> items = getItems(cursorId, page);
+        final List<CafeProductDto> items = getItems(cursorId, page, ownerId);
         // 더 진행할 수 있는 데이터가 있는지
         final Long lastIdOfList = items.isEmpty() ?
                 null : items.get(items.size() - 1).getId();
 
-        return new CursorResult<>(items, hasNext(lastIdOfList));
+        return new CursorResult<>(items, hasNext(lastIdOfList, ownerId));
     }
 
     @Override
     public CafeProduct getItem(Long id) {
-        // TODO 사장님 ID 넣어서 수행하게 바꿔야함
+        // SecurityContextHolder에 있는 유저 정보를 받아와서 Integer로 변환해 ownerId로 사용
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer ownerId = Integer.valueOf(userDetails.getUsername());
+
+
         return cafeProductRepository.findByIdAndOwnerId(id, ownerId);
     }
 
     @Override
     public List<CafeProductDto> searchItem(String keyword) {
-        // TODO 사장님 ID 넣어서 수행하게 바꿔야함
+        // SecurityContextHolder에 있는 유저 정보를 받아와서 Integer로 변환해 ownerId로 사용
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer ownerId = Integer.valueOf(userDetails.getUsername());
 
         List<CafeProduct> list;
 
@@ -131,7 +155,7 @@ public class CafeProductServiceImpl implements CafeProductService {
     /* 커서 ID가 없다면 가장 최신부터 내림차순으로 page 만큼 가져오고
     *  커서가 있으면 해당 커서의 위치부터 내림차순으로 page 만큼 가져옴
     * */
-    private List<CafeProductDto> getItems(Long id, Pageable page) {
+    private List<CafeProductDto> getItems(Long id, Pageable page, Integer ownerId) {
 
         List<CafeProduct> list = (id == null || id == 0L) ?
                 cafeProductRepository.findAllByOwnerIdOrderByIdDesc(ownerId, page) :
@@ -152,7 +176,7 @@ public class CafeProductServiceImpl implements CafeProductService {
     /* 조회한 내용의 마지막 데이터에서 다음에도 데이터가 있는 지 확인하여
     *  존재하면 true, 없다면 false
     * */
-    private Boolean hasNext(Long id) {
+    private Boolean hasNext(Long id, Integer ownerId) {
         if (id == null) return false;
         return cafeProductRepository.existsByIdLessThan(id, ownerId).isPresent();
     }

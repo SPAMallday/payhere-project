@@ -3,8 +3,8 @@ package com.spamallday.payhere.configuration;
 import com.spamallday.payhere.dto.JsonResponseDto;
 import com.spamallday.payhere.exception.CustomException;
 import com.spamallday.payhere.util.JsonConverter;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -32,6 +32,16 @@ public class ApiControllerAdvice {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<JsonResponseDto> handleTypeMismatchExceptions(MethodArgumentTypeMismatchException ex) {
+        // 에러 메세지
+        String msg = ex.getMessage();
+        // 반환 형식에 맞춰 에러 처리
+        JsonResponseDto json = JsonConverter.toBadJsonResponse(msg);
+
+        return ResponseEntity.badRequest().body(json);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<JsonResponseDto> handleLoginExceptions(BadCredentialsException ex) {
         // 에러 메세지
         String msg = ex.getMessage();
         // 반환 형식에 맞춰 에러 처리

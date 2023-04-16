@@ -14,7 +14,7 @@ public class OwnerDto extends MemberDto {
         return Owner.builder()
                 .number(getNumber())
                 .password(getPassword())
-                .salt(getSalt())
+//                .salt(getSalt())
                 .build();
     }
 }

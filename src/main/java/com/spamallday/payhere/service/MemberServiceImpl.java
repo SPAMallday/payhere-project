@@ -1,15 +1,14 @@
 package com.spamallday.payhere.service;
 
 import com.spamallday.payhere.dto.MemberDto;
-import com.spamallday.payhere.dto.OwnerDto;
 import com.spamallday.payhere.entity.Member;
-import com.spamallday.payhere.entity.Owner;
 import com.spamallday.payhere.exception.CustomErrorCode;
 import com.spamallday.payhere.exception.CustomException;
 import com.spamallday.payhere.repository.MemberRepository;
 import com.spamallday.payhere.repository.OwnerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -22,11 +21,13 @@ public class MemberServiceImpl implements MemberService{
 
     private final MemberRepository memberRepository;
     private final OwnerRepository ownerRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    MemberServiceImpl(MemberRepository memberRepository, OwnerRepository ownerRepository) {
+    MemberServiceImpl(MemberRepository memberRepository, OwnerRepository ownerRepository, PasswordEncoder passwordEncoder) {
         this.memberRepository = memberRepository;
         this.ownerRepository = ownerRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // 입력 휴대폰 번호 자릿수 및 숫자 여부 확인
@@ -52,7 +53,7 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public void saveMember(MemberDto memberDto) {
         // 암호화
-        memberDto.encrypt();
+        memberDto.setPassword(passwordEncoder.encode(memberDto.getPassword()));
         // 회원가입 유형이 있다면 구분하지만 현재는 사장님만 있어서 MemberDto에서 Entity로 변환
         ownerRepository.save(memberDto.toOwnerEntity());
     }

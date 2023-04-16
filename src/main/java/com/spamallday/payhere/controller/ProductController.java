@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -43,7 +42,7 @@ public class ProductController {
         try {
             cafeProductService.registerItem(cafeProductDto);
         }catch (Exception e) {
-            JsonConverter.toJsonResponse(HttpStatus.INTERNAL_SERVER_ERROR, CustomErrorCode.PRODUCT_REG_ERROR.getErrorMsg(), null);
+            JsonConverter.toJsonResponse(HttpStatus.BAD_REQUEST, CustomErrorCode.PRODUCT_REG_ERROR.getErrorMsg(), null);
         }
 
         return ResponseEntity.ok().body(JsonConverter.toOkNoDataJsonResponse());
@@ -60,7 +59,7 @@ public class ProductController {
         try {
             cafeProductService.updateProperty(id, cafeProductDto);
         }catch (Exception e) {
-            JsonConverter.toJsonResponse(HttpStatus.INTERNAL_SERVER_ERROR, CustomErrorCode.PRODUCT_UPDATE_ERROR.getErrorMsg(), null);
+            JsonConverter.toJsonResponse(HttpStatus.BAD_REQUEST, CustomErrorCode.PRODUCT_UPDATE_ERROR.getErrorMsg(), null);
         }
 
         return ResponseEntity.ok().body(JsonConverter.toOkNoDataJsonResponse());
@@ -73,7 +72,7 @@ public class ProductController {
         try {
             cafeProductService.removeItem(id);
         }catch (Exception e) {
-            JsonConverter.toJsonResponse(HttpStatus.INTERNAL_SERVER_ERROR, CustomErrorCode.PRODUCT_DELETE_ERROR.getErrorMsg(), null);
+            JsonConverter.toJsonResponse(HttpStatus.BAD_REQUEST, CustomErrorCode.PRODUCT_DELETE_ERROR.getErrorMsg(), null);
         }
 
         return ResponseEntity.ok().body(JsonConverter.toOkNoDataJsonResponse());
