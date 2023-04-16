@@ -1,17 +1,31 @@
-# PAYHERE 과제
+# PAYHERE
+기간 : 2023.04.11 ~ 2023.04.16
+<hr>
 
 
-### 프로젝트 아키텍쳐
+### 🏗 프로젝트 아키텍쳐   
 ![Payhere 아키텍쳐 이미지](https://user-images.githubusercontent.com/81751267/232327900-44563bdc-937c-4083-b252-b75a37f77159.png)
 - JWT Refresh Token 관리를 위해 Redis를 활용하였습니다.
 - 로그인, JWT 활용 편의성을 위해 Spring Security를 적용하였습니다.
+- 서버 : Java 1.8 / Spring Boot 2.7.10
+- Data : MySQL 5.7 / Redis
+- JPA (Hibernate), Spring Security, JWT 등으로 개발하였습니다.
 <hr>
 
-### ERD
+### ▶ 실행 방법
+- 프로젝트 Root 디렉토리 명령 프롬프트(터미널)에서 다음 커맨드를 입력합니다. 
+```java
+docker-compose up --build -d
+```
+
+<br>
+<hr>
+
+### ⚙ ERD
 ![payhere](https://user-images.githubusercontent.com/81751267/232324349-95900ed1-af6e-4a36-8386-51c3ef6a04d9.png)
 #### ERD 링크 : [ERDcloud](https://www.erdcloud.com/p/wjhHtxyw3y8Ae7dSk)
 
-### ERD 설계 코멘트
+### ⚙ ERD 설계 코멘트
 
 - **상품 테이블 초성 이름 필드**   
     상품 등록, 수정 시 해당 상품의 초성을 분리하여 저장하는 필드입니다.
@@ -44,17 +58,22 @@
     - 요구사항이 특정되지 않은 문자열 필드는 VARCHAR의 짧게 나타낼 수 있는 크기 중 가장 큰 255를 설정합니다.   
     - 상품 설명은 1000자로 가정하였습니다.   
 <br>
-    
-- **d**   
-<br>
 
-
-
-- **d**   
-<br>
 <hr>
 
-### 프로젝트 구조
+### 🗝 API 및 테스트 케이스   
+- **d**   
+<br>
+
+<hr>
+
+### 🧪 고민해 볼 점 및 후기   
+- **d**   
+<br>
+
+<hr>
+
+### 💧 프로젝트 디렉토리   
 ```java
 ├─gradle
 │  └─wrapper
