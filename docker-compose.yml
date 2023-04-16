@@ -43,3 +43,18 @@ services:
     # 컨테이너 내부:외부 포트 설정
     ports:
       - "6379:6379"
+
+  app:
+    build: .
+    container_name: payhere-app
+#    image: openjdk:8-jdk
+    ports:
+      - "8080:8080"
+#    volumes:
+#      - ./app:/app
+#    working_dir: /app
+#    command: [ “./gradlew”, “bootrun” ]
+    depends_on:
+      - db
+      - in_memory
+    restart: always

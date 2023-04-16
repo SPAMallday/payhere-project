@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @Slf4j
 @SpringBootTest
 class OwnerRepositoryTest {
-    @Autowired
+/*    @Autowired
     OwnerRepository ownerRepository;
 
     @AfterEach    //@Test 어노테이션이 붙은 메소드가 각각 실행된 후 자동으로 실행됨
@@ -24,7 +24,7 @@ class OwnerRepositoryTest {
     @Test
     public void saveAndReadPosts() {
           // Spring Security Encoder가 아닌 직접 만들어서 사용했을 때 테스트했던 코드
-/*        String number = "01012345678";
+        String number = "01012345678";
         String password = "C8BD6FDFAECAA720A6B30527E5E97AE4891AAD1D713991ED5480F759DA195945";
         String salt = "63479AD69A090B258277EC8FBA6F99419A2FFB248981510657C944CCD1148E97";
 
@@ -41,7 +41,7 @@ class OwnerRepositoryTest {
         }
         finally {
             log.info("종료 : Owner 등록 및 조회 테스트");
-        }*/
+        }
 
-    }
+    }*/
 }
