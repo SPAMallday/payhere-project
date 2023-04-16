@@ -1,6 +1,7 @@
 package com.spamallday.payhere.entity;
 
 import com.spamallday.payhere.dto.CafeProductDto;
+import com.spamallday.payhere.util.NameConverter;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,14 +35,12 @@ public class CafeProduct {
     @Column(name = "item_id", columnDefinition = "BIGINT unsigned")
     private Long id;
 
-    @Column(length = 255)
     private String category;
 
     private Integer price;
 
     private Integer cost;
 
-    @Column(length = 255)
     private String name;
 
     @Column(length = 1000)
@@ -55,6 +54,9 @@ public class CafeProduct {
 
     @Column(length = 5)
     private String size;
+
+    @Column(name = "word_name")
+    private String wordName;
 
     // 다대일 맵핑
     @ManyToOne
@@ -71,6 +73,7 @@ public class CafeProduct {
         this.code = code;
         this.expire = expire;
         this.size = size;
+        this.wordName = NameConverter.toConsonant(name);
         this.owner = owner;
     }
 
@@ -84,6 +87,7 @@ public class CafeProduct {
         this.code = cafeProductDto.getCode();
         this.expire = Timestamp.valueOf(LocalDateTime.parse(cafeProductDto.getExpire(), DateTimeFormatter.ISO_DATE_TIME));
         this.size = cafeProductDto.getSize();
+        this.wordName = NameConverter.toConsonant(cafeProductDto.getName());
     }
 
     // Property 1개 변경
@@ -117,5 +121,9 @@ public class CafeProduct {
 
     public void changeSize(String size) {
         this.size = size;
+    }
+
+    public void changeWordName(String wordName) {
+        this.wordName = NameConverter.toConsonant(getName());
     }
 }

@@ -83,18 +83,9 @@ public class ProductController {
     public ResponseEntity<JsonResponseDto> getCafeProducts(@RequestParam(required = false) Long cursorId,
                                                      @RequestParam(required = false) Integer size) {
         if (size == null) size = PAGE_SIZE; // size의 Null 처리
-        CursorResult<CafeProduct> list = cafeProductService.getItemList(cursorId, PageRequest.of(0, size));
+        CursorResult<CafeProductDto> list = cafeProductService.getItemList(cursorId, PageRequest.of(0, size));
 
-        // DTO 형태로 변경해서 전송
-        List<CafeProductDto> tempList = new ArrayList<>();
-
-        list.getProducts().forEach(cafeProduct -> {
-            tempList.add(CafeProductDto.fromEntity(cafeProduct));
-        });
-
-        CursorResult<CafeProductDto> convertList = new CursorResult<>(tempList,list.getHasNext());
-
-        return ResponseEntity.ok().body(JsonConverter.toJsonResponse(HttpStatus.OK, "ok", convertList));
+        return ResponseEntity.ok().body(JsonConverter.toJsonResponse(HttpStatus.OK, "ok", list));
     }
 
     @GetMapping("/cafe/{id}")
@@ -106,5 +97,16 @@ public class ProductController {
         }
 
         return ResponseEntity.ok().body(JsonConverter.toJsonResponse(HttpStatus.OK, "ok", CafeProductDto.fromEntity(res)));
+    }
+
+    @GetMapping("/cafe/search")
+    public ResponseEntity<JsonResponseDto> searchByName(@RequestParam(required = false) String keyword) {
+        if (keyword == null || keyword.equals("")) {
+            throw new CustomException(CustomErrorCode.SEARCH_KEY_ERROR);
+        }
+
+        List<CafeProductDto> list = cafeProductService.searchItem(keyword);
+
+        return ResponseEntity.ok().body(JsonConverter.toJsonResponse(HttpStatus.OK, "ok", list));
     }
 }

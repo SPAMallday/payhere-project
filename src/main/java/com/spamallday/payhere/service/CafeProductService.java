@@ -12,7 +12,7 @@ public interface CafeProductService {
     void updateProperty(Long id, CafeProductDto cafeProductDto) throws Exception;
     void registerItem(CafeProductDto cafeProductDto) throws Exception;
     void removeItem(Long id) throws Exception ;
-    CursorResult<CafeProduct> getItemList(Long cursorId, Pageable page);
+    CursorResult<CafeProductDto> getItemList(Long cursorId, Pageable page);
     CafeProduct getItem(Long id);
-
+    List<CafeProductDto> searchItem(String keyword) ;
 }

@@ -55,4 +55,51 @@ public interface CafeProductRepository extends JpaRepository<CafeProduct, Long> 
             "        and" +
             "        p.item_id < :id limit 1", nativeQuery = true)
     public Optional<BigInteger> existsByIdLessThan(@Param("id") Long id, @Param("ownerId") Integer ownerId);
+
+    @Query (value =
+            "    select" +
+            "        p.item_id as item_id, " +
+                    "p.category as category, " +
+                    "p.price as price, " +
+                    "p.cost as cost, " +
+                    "p.name as name, " +
+                    "p.info as info, " +
+                    "p.code as code, " +
+                    "p.expire as expire, " +
+                    "p.size as size, " +
+                    "p.word_name as word_name, " +
+                    "p.owner_id as owner_id " +
+            "    from " +
+            "        product p " +
+            "    left outer join " +
+            "        member o " +
+            "            on p.owner_id=o.user_id " +
+            "    where" +
+            "        o.user_id=:ownerId " +
+            "        and " +
+            "        p.name like %:keyword%", nativeQuery = true)
+    public List<CafeProduct> findByOwnerIdNameContaining(@Param("ownerId") Integer ownerId, @Param("keyword") String keyword);
+    @Query (value =
+            "    select" +
+                    "        p.item_id as item_id, " +
+                    "p.category as category, " +
+                    "p.price as price, " +
+                    "p.cost as cost, " +
+                    "p.name as name, " +
+                    "p.info as info, " +
+                    "p.code as code, " +
+                    "p.expire as expire, " +
+                    "p.size as size, " +
+                    "p.word_name as word_name, " +
+                    "p.owner_id as owner_id " +
+                    "    from " +
+                    "        product p " +
+                    "    left outer join " +
+                    "        member o " +
+                    "            on p.owner_id=o.user_id " +
+                    "    where" +
+                    "        o.user_id=:ownerId " +
+                    "        and " +
+                    "        p.word_name like %:keyword%", nativeQuery = true)
+    public List<CafeProduct> findByWordNameContaining(@Param("ownerId") Integer ownerId, @Param("keyword") String keyword);
 }
