@@ -18,8 +18,9 @@ import java.util.List;
 @DiscriminatorValue("OWNER")    // DTYPE을 특정
 public class Owner extends Member {
 
-    //양방향 매핑을 위해 추가
-    @OneToMany(mappedBy = "owner")
-    private List<CafeProduct> cafeProducts = new ArrayList<>();
+//    stackoverflow 문제 처리 가능하면 적용!
+//    //양방향 매핑을 위해 추가
+//    @OneToMany(mappedBy = "owner")
+//    private List<CafeProduct> cafeProducts = new ArrayList<>();
 
 }

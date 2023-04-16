@@ -2,11 +2,14 @@ package com.spamallday.payhere.controller;
 
 import com.spamallday.payhere.dto.CafeProductDto;
 import com.spamallday.payhere.dto.JsonResponseDto;
+import com.spamallday.payhere.entity.CafeProduct;
 import com.spamallday.payhere.exception.CustomErrorCode;
 import com.spamallday.payhere.repository.CafeProductRepository;
 import com.spamallday.payhere.service.CafeProductServiceImpl;
+import com.spamallday.payhere.util.CursorResult;
 import com.spamallday.payhere.util.JsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +19,8 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/product")
 public class ProductController {
+
+    private static final int PAGE_SIZE = 10;     // pagination 단위
 
     private final CafeProductServiceImpl cafeProductService;
     private final CafeProductRepository cafeProductRepository;
@@ -31,10 +36,9 @@ public class ProductController {
     public ResponseEntity<JsonResponseDto> cafeRegist(@Valid @RequestBody CafeProductDto cafeProductDto) {
         // 필수 항목 검증
         cafeProductService.validProperty(cafeProductDto);
-        // TODO 사용자 정보 받아와서 toEntity에 전달하여 Owner 등록
         // 상품 등록
         try {
-            cafeProductRepository.save(cafeProductDto.toEntity());
+            cafeProductService.registerItem(cafeProductDto);
         }catch (Exception e) {
             JsonConverter.toJsonResponse(HttpStatus.INTERNAL_SERVER_ERROR, CustomErrorCode.PRODUCT_REG_ERROR.getErrorMsg(), null);
         }
@@ -70,5 +74,14 @@ public class ProductController {
         }
 
         return ResponseEntity.ok().body(JsonConverter.toOkNoDataJsonResponse());
+    }
+
+    @GetMapping("/cafe")
+    public ResponseEntity<JsonResponseDto> getBoards(@RequestParam(required = false) Long cursorId,
+                                                     @RequestParam(required = false) Integer size) {
+        if (size == null) size = PAGE_SIZE; // size의 Null 처리
+        CursorResult<CafeProduct> list = cafeProductService.getItemList(cursorId, PageRequest.of(0, size));
+
+        return ResponseEntity.ok().body(JsonConverter.toJsonResponse(HttpStatus.OK, "ok", list));
     }
 }
