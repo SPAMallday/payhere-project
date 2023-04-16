@@ -4,6 +4,7 @@ import com.spamallday.payhere.dto.CafeProductDto;
 import com.spamallday.payhere.dto.JsonResponseDto;
 import com.spamallday.payhere.entity.CafeProduct;
 import com.spamallday.payhere.exception.CustomErrorCode;
+import com.spamallday.payhere.exception.CustomException;
 import com.spamallday.payhere.repository.CafeProductRepository;
 import com.spamallday.payhere.service.CafeProductServiceImpl;
 import com.spamallday.payhere.util.CursorResult;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/product")
@@ -77,11 +80,31 @@ public class ProductController {
     }
 
     @GetMapping("/cafe")
-    public ResponseEntity<JsonResponseDto> getBoards(@RequestParam(required = false) Long cursorId,
+    public ResponseEntity<JsonResponseDto> getCafeProducts(@RequestParam(required = false) Long cursorId,
                                                      @RequestParam(required = false) Integer size) {
         if (size == null) size = PAGE_SIZE; // size의 Null 처리
         CursorResult<CafeProduct> list = cafeProductService.getItemList(cursorId, PageRequest.of(0, size));
 
-        return ResponseEntity.ok().body(JsonConverter.toJsonResponse(HttpStatus.OK, "ok", list));
+        // DTO 형태로 변경해서 전송
+        List<CafeProductDto> tempList = new ArrayList<>();
+
+        list.getProducts().forEach(cafeProduct -> {
+            tempList.add(CafeProductDto.fromEntity(cafeProduct));
+        });
+
+        CursorResult<CafeProductDto> convertList = new CursorResult<>(tempList,list.getHasNext());
+
+        return ResponseEntity.ok().body(JsonConverter.toJsonResponse(HttpStatus.OK, "ok", convertList));
+    }
+
+    @GetMapping("/cafe/{id}")
+    public ResponseEntity<JsonResponseDto> getCafeProductOne(@PathVariable Long id) {
+        CafeProduct res = cafeProductService.getItem(id);
+
+        if (res == null) {
+            throw new CustomException(CustomErrorCode.PRODUCT_NO_ITEM_ERROR);
+        }
+
+        return ResponseEntity.ok().body(JsonConverter.toJsonResponse(HttpStatus.OK, "ok", CafeProductDto.fromEntity(res)));
     }
 }

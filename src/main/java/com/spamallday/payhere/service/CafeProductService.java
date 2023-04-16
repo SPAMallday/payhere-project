@@ -13,5 +13,6 @@ public interface CafeProductService {
     void registerItem(CafeProductDto cafeProductDto) throws Exception;
     void removeItem(Long id) throws Exception ;
     CursorResult<CafeProduct> getItemList(Long cursorId, Pageable page);
+    CafeProduct getItem(Long id);
 
 }

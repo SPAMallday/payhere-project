@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Slf4j
@@ -96,6 +97,12 @@ public class CafeProductServiceImpl implements CafeProductService {
                 null : items.get(items.size() - 1).getId();
 
         return new CursorResult<>(items, hasNext(lastIdOfList));
+    }
+
+    @Override
+    public CafeProduct getItem(Long id) {
+        // TODO 사장님 ID 넣어서 수행하게 바꿔야함
+        return cafeProductRepository.findByIdAndOwnerId(id, ownerId);
     }
 
     // 아래는 페이징을 위해 Service 내에서만 사용하는 메서드들

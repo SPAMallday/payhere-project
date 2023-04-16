@@ -64,4 +64,20 @@ public class CafeProductDto {
                     .size(getSize())
                     .build();
     }
+
+    public static CafeProductDto fromEntity(CafeProduct cafeProduct) {
+        CafeProductDto convert = new CafeProductDto();
+
+        convert.setId(cafeProduct.getId());
+        convert.setCategory(cafeProduct.getCategory());
+        convert.setPrice(cafeProduct.getPrice());
+        convert.setCost(cafeProduct.getCost());
+        convert.setName(cafeProduct.getName());
+        convert.setInfo(cafeProduct.getInfo());
+        convert.setCode(cafeProduct.getCode());
+        convert.setExpire(cafeProduct.getExpire().toString());
+        convert.setSize(cafeProduct.getSize());
+
+        return convert;
+    }
 }
